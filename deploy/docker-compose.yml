@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: rujula
+      POSTGRES_USER: rujula
+      POSTGRES_PASSWORD: CHANGE_ME
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  api:
+    build: ../backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://rujula:CHANGE_ME@db:5432/rujula
+      JWT_SECRET: CHANGE_ME_LONG_RANDOM_SECRET
+      SELLER_EMAIL: seller@rujula.local
+      SELLER_PASSWORD: CHANGE_ME
+    depends_on: [db]
+    ports: ["8000:8000"]
+volumes: { pgdata: {} }

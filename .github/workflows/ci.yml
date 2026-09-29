@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Compile Python files
+        run: python -m compileall backend/app
+      - name: Check API import
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite:///./ci.db
+          JWT_SECRET: ci-only-secret
+          SELLER_EMAIL: seller@example.test
+          SELLER_PASSWORD: ci-only-password
+        run: python -c "from app.main import app; print(app.title)"

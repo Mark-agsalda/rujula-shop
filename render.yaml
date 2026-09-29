@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: rujula-api
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    rootDir: backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: rujula-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SELLER_EMAIL
+        sync: false
+      - key: SELLER_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS
+        value: "*"
+
+  - type: web
+    name: rujula-web
+    runtime: static
+    buildCommand: printf 'window.RUJULA_API_BASE = "%s";\n' "$API_BASE_URL" > web/config.js
+    staticPublishPath: ./web
+    envVars:
+      - key: API_BASE_URL
+        value: https://rujula-api.onrender.com
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+
+databases:
+  - name: rujula-db
+    plan: free
+    region: singapore
