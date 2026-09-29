@@ -1,3 +1,107 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rujula Shop</title>
-<link rel="icon" type="image/png" href="rujula-icon.png"><link rel="icon" type="image/png" href="rujula-icon.png"><link rel="stylesheet" href="style.css"></head><body><header><b>RUJULA</b><nav><button onclick="show('shop')">Shop</button><button onclick="show('cart')">Cart <span id="cartCount">0</span></button><button onclick="show('account')">Account</button><button onclick="show('seller')">Seller</button></nav></header><main><section id="shop" class="page"><div class="hero"><h1>Rujula Shop</h1><input id="search" placeholder="Search products..." oninput="loadProducts()"></div><div id="products" class="grid"></div></section><section id="cart" class="page hidden"><h2>Cart</h2><div id="cartItems"></div><div id="checkout"></div></section><section id="account" class="page hidden"><h2>Account</h2><div id="accountBox"></div></section><section id="seller" class="page hidden"><h2>Seller Dashboard</h2><div id="sellerBox"></div></section></main><script src="config.js"></script>
-<script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1f3a">
+  <title>Rujula Shop</title>
+  <link rel="icon" type="image/png" href="rujula-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <section id="authView" class="auth-shell">
+    <div class="auth-brand">
+      <img src="rujula-icon.png" alt="Rujula Shop">
+      <div>
+        <strong>RUJULA SHOP</strong>
+        <span>Simple. Local. Convenient.</span>
+      </div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-copy">
+        <span class="eyebrow">WELCOME</span>
+        <h1>Everything you need, in one place.</h1>
+        <p>Shop products, manage your orders, and keep your delivery addresses ready for checkout.</p>
+      </div>
+      <div class="auth-tabs">
+        <button id="loginTab" class="tab active" onclick="switchAuth('login')">Login</button>
+        <button id="registerTab" class="tab" onclick="switchAuth('register')">Create account</button>
+      </div>
+      <form id="loginForm" onsubmit="submitLogin(event)">
+        <label>Email</label>
+        <input id="loginEmail" type="email" placeholder="you@example.com" required>
+        <label>Password</label>
+        <input id="loginPassword" type="password" placeholder="Your password" required>
+        <button class="primary wide" type="submit">Login</button>
+      </form>
+      <form id="registerForm" class="hidden" onsubmit="submitRegister(event)">
+        <label>Full name</label>
+        <input id="registerName" placeholder="Juan Dela Cruz" required>
+        <label>Email</label>
+        <input id="registerEmail" type="email" placeholder="you@example.com" required>
+        <label>Phone</label>
+        <input id="registerPhone" placeholder="09xxxxxxxxx">
+        <label>Password</label>
+        <input id="registerPassword" type="password" placeholder="Create a password" minlength="6" required>
+        <button class="primary wide" type="submit">Create account</button>
+      </form>
+    </div>
+    <p class="auth-note">Rujula Shop • Customer & Seller Portal</p>
+  </section>
+
+  <div id="appView" class="hidden">
+    <header class="topbar">
+      <div class="brand" onclick="navigate('shop')">
+        <img src="rujula-icon.png" alt="Rujula">
+        <div><strong>RUJULA</strong><span>SHOP</span></div>
+      </div>
+      <div class="top-search">
+        <span>⌕</span>
+        <input id="searchInput" placeholder="Search products..." oninput="debouncedShop()">
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" onclick="navigate('cart')">🛒 <b id="cartCount">0</b></button>
+        <button class="user-chip" onclick="navigate('dashboard')"><span id="userInitial">U</span><span id="userNameTop">Account</span></button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="side-section">
+          <small>MENU</small>
+          <button data-nav="dashboard" onclick="navigate('dashboard')">▦ <span>Dashboard</span></button>
+          <button data-nav="shop" onclick="navigate('shop')">🛍 <span>Shop</span></button>
+          <button data-nav="cart" onclick="navigate('cart')">🛒 <span>Cart</span><b id="sideCartCount">0</b></button>
+          <button data-nav="orders" onclick="navigate('orders')">📦 <span>My Orders</span></button>
+          <button data-nav="profile" onclick="navigate('profile')">👤 <span>Profile</span></button>
+        </div>
+        <div id="sellerNav" class="side-section hidden">
+          <small>SELLER</small>
+          <button data-nav="products" onclick="navigate('products')">▣ <span>Products</span></button>
+          <button data-nav="seller-orders" onclick="navigate('seller-orders')">🧾 <span>Orders</span></button>
+          <button data-nav="shipping" onclick="navigate('shipping')">🚚 <span>Shipping</span></button>
+        </div>
+        <div class="side-footer">© 2026 Rujula Shop</div>
+      </aside>
+
+      <main class="content">
+        <section id="page-dashboard" class="page"></section>
+        <section id="page-shop" class="page hidden"></section>
+        <section id="page-cart" class="page hidden"></section>
+        <section id="page-orders" class="page hidden"></section>
+        <section id="page-profile" class="page hidden"></section>
+        <section id="page-products" class="page hidden"></section>
+        <section id="page-seller-orders" class="page hidden"></section>
+        <section id="page-shipping" class="page hidden"></section>
+      </main>
+    </div>
+  </div>
+
+  <div id="modal" class="modal hidden"></div>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
